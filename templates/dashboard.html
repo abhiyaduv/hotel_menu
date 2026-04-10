@@ -1,0 +1,500 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+{% if not request.user.is_superuser %}
+  {# Non-admins are blocked at the view level, but this is a safety fallback #}
+  <div style="text-align:center; padding:100px 24px;">
+    <h2 style="font-family:'Playfair Display',serif; font-size:36px; color:#1a0f0a;">Access Denied</h2>
+    <p style="color:#7a5c4a; margin-top:12px;">You don't have permission to view this page.</p>
+    <a href="/" style="display:inline-block; margin-top:28px; background:#c0392b; color:#fff; padding:12px 30px; border-radius:6px; text-decoration:none; font-size:13px; letter-spacing:1px;">Go Home</a>
+  </div>
+{% else %}
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=DM+Sans:wght@300;400;500&display=swap');
+
+  :root {
+    --red: #c0392b;
+    --red-dark: #922b21;
+    --gold: #d4a843;
+    --dark: #1a0f0a;
+    --cream: #fdf6ec;
+    --text: #2c1a10;
+    --muted: #7a5c4a;
+    --border: rgba(44,26,16,0.1);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--text);
+  }
+
+  /* ── TOP BAR ── */
+  .dash-topbar {
+    background: var(--dark);
+    padding: 18px 36px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .dash-topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .dash-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: -0.5px;
+  }
+
+  .dash-logo span { color: var(--gold); }
+
+  .admin-badge {
+    background: rgba(212,168,67,0.15);
+    border: 1px solid rgba(212,168,67,0.3);
+    color: var(--gold);
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 40px;
+  }
+
+  .dash-topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .topbar-user {
+    font-size: 13px;
+    color: rgba(255,255,255,0.5);
+  }
+
+  .topbar-user strong {
+    color: #fff;
+    font-weight: 500;
+  }
+
+  .logout-btn {
+    background: rgba(192,57,43,0.2);
+    border: 1px solid rgba(192,57,43,0.35);
+    color: #e88;
+    padding: 7px 16px;
+    border-radius: 6px;
+    font-size: 12px;
+    text-decoration: none;
+    transition: all 0.2s;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+  }
+
+  .logout-btn:hover {
+    background: rgba(192,57,43,0.4);
+    color: #fff;
+  }
+
+  /* ── LAYOUT ── */
+  .dash-wrap {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 48px 24px 80px;
+  }
+
+  /* ── STAT CARDS ── */
+  .stat-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+    margin-bottom: 48px;
+  }
+
+  .stat-card {
+    background: #fff;
+    border-radius: 14px;
+    padding: 22px 24px;
+    border: 1px solid var(--border);
+    box-shadow: 0 2px 12px rgba(26,15,10,0.05);
+    animation: fadeUp 0.5s ease both;
+  }
+
+  .stat-label {
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+
+  .stat-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--dark);
+    line-height: 1;
+  }
+
+  .stat-value.red { color: var(--red); }
+  .stat-value.gold { color: var(--gold); }
+
+  /* ── SECTION HEADER ── */
+  .section-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .section-head h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--dark);
+  }
+
+  .section-head h2 em { font-style: italic; color: var(--red); }
+
+  /* ── ADD FORM ── */
+  .add-form-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 28px 28px 32px;
+    border: 1px solid var(--border);
+    box-shadow: 0 2px 16px rgba(26,15,10,0.06);
+    margin-bottom: 40px;
+    animation: fadeUp 0.5s ease 0.1s both;
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    gap: 14px;
+    align-items: end;
+  }
+
+  @media (max-width: 600px) {
+    .form-row { grid-template-columns: 1fr; }
+  }
+
+  .form-group label {
+    display: block;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+
+  .form-group input {
+    width: 100%;
+    padding: 11px 14px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--text);
+    background: var(--cream);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .form-group input:focus {
+    border-color: var(--red);
+    background: #fff;
+  }
+
+  .form-group input::placeholder { color: #bba898; }
+
+  .submit-btn {
+    background: var(--dark);
+    color: #fff;
+    border: none;
+    padding: 12px 26px;
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+    height: 44px;
+  }
+
+  .submit-btn:hover {
+    background: var(--red);
+    transform: translateY(-1px);
+  }
+
+  /* ── BOOKINGS TABLE ── */
+  .table-card {
+    background: #fff;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    box-shadow: 0 2px 16px rgba(26,15,10,0.06);
+    overflow: hidden;
+    margin-bottom: 48px;
+    animation: fadeUp 0.5s ease 0.15s both;
+  }
+
+  .table-wrap { overflow-x: auto; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+
+  thead {
+    background: #f7f0e8;
+    border-bottom: 1px solid var(--border);
+  }
+
+  thead th {
+    padding: 14px 20px;
+    text-align: left;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 500;
+  }
+
+  tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.15s;
+  }
+
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: #fdf6ec; }
+
+  tbody td {
+    padding: 14px 20px;
+    color: var(--text);
+    vertical-align: middle;
+  }
+
+  .booking-title {
+    font-weight: 500;
+    color: var(--dark);
+  }
+
+  .booking-desc {
+    font-size: 12.5px;
+    color: var(--muted);
+    margin-top: 3px;
+  }
+
+  .delete-btn {
+    background: rgba(192,57,43,0.08);
+    border: 1px solid rgba(192,57,43,0.2);
+    color: var(--red);
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 12px;
+    text-decoration: none;
+    font-family: 'DM Sans', sans-serif;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+
+  .delete-btn:hover {
+    background: var(--red);
+    color: #fff;
+    border-color: var(--red);
+  }
+
+  .empty-row td {
+    padding: 48px 20px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 14px;
+  }
+
+  /* ── CHART ── */
+  .chart-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 28px;
+    border: 1px solid var(--border);
+    box-shadow: 0 2px 16px rgba(26,15,10,0.06);
+    animation: fadeUp 0.5s ease 0.2s both;
+  }
+
+  .chart-card canvas { max-height: 280px; }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+</style>
+
+
+<!-- TOP BAR -->
+<div class="dash-topbar">
+  <div class="dash-topbar-left">
+    <div class="dash-logo">KON<span>ARK</span></div>
+    <span class="admin-badge">Admin Panel</span>
+  </div>
+  <div class="dash-topbar-right">
+    <span class="topbar-user">Logged in as <strong>{{ request.user.username }}</strong></span>
+    <a href="/logout/" class="logout-btn">Logout</a>
+  </div>
+</div>
+
+
+<div class="dash-wrap">
+
+  <!-- STAT CARDS -->
+  <div class="stat-row">
+    <div class="stat-card">
+      <div class="stat-label">Total Bookings</div>
+      <div class="stat-value red">{{ data|length }}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Admin</div>
+      <div class="stat-value" style="font-size:22px; padding-top:6px;">{{ request.user.username }}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Status</div>
+      <div class="stat-value gold" style="font-size:22px; padding-top:6px;">Active</div>
+    </div>
+  </div>
+
+
+  <!-- ADD BOOKING -->
+  <div class="section-head">
+    <h2>Add <em>Booking</em></h2>
+  </div>
+
+  <div class="add-form-card">
+    <form method="POST" action="/add/">
+      {% csrf_token %}
+      <div class="form-row">
+        <div class="form-group">
+          <label>Title</label>
+          <input name="title" placeholder="e.g. Table for 2" required>
+        </div>
+        <div class="form-group">
+          <label>Description</label>
+          <input name="description" placeholder="e.g. Window seat, 7pm" required>
+        </div>
+        <button type="submit" class="submit-btn">+ Add</button>
+      </div>
+    </form>
+  </div>
+
+
+  <!-- BOOKINGS TABLE -->
+  <div class="section-head">
+    <h2>All <em>Bookings</em></h2>
+  </div>
+
+  <div class="table-card">
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for d in data %}
+          <tr>
+            <td style="color:var(--muted); font-size:13px;">{{ forloop.counter }}</td>
+            <td>
+              <div class="booking-title">{{ d.title }}</div>
+            </td>
+            <td>
+              <div class="booking-desc">{{ d.description }}</div>
+            </td>
+            <td>
+              <a href="/delete/{{ d.id }}/" class="delete-btn">Delete</a>
+            </td>
+          </tr>
+          {% empty %}
+          <tr class="empty-row">
+            <td colspan="4">No bookings yet. Add one above.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+
+  <!-- CHART -->
+  {% if data %}
+  <div class="section-head">
+    <h2>Bookings <em>Overview</em></h2>
+  </div>
+  <div class="chart-card">
+    <canvas id="chart"></canvas>
+  </div>
+  {% endif %}
+
+</div><!-- /dash-wrap -->
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const labels = [{% for d in data %}"{{ d.title }}"{% if not forloop.last %},{% endif %}{% endfor %}];
+  const values = [{% for d in data %}1{% if not forloop.last %},{% endif %}{% endfor %}];
+
+  if (labels.length > 0) {
+    new Chart(document.getElementById('chart'), {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Bookings',
+          data: values,
+          backgroundColor: 'rgba(192,57,43,0.15)',
+          borderColor: '#c0392b',
+          borderWidth: 2,
+          borderRadius: 6,
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { display: false }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: { stepSize: 1, color: '#7a5c4a' },
+            grid: { color: 'rgba(44,26,16,0.06)' }
+          },
+          x: {
+            ticks: { color: '#7a5c4a' },
+            grid: { display: false }
+          }
+        }
+      }
+    });
+  }
+});
+</script>
+
+{% endif %}
+{% endblock %}

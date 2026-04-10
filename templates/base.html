@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Konark</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<!-- 🔥 SIDEBAR -->
+<div class="sidebar">
+
+    <h2>Konark</h2>
+
+    <a href="/">🏠 Home</a>
+    <a href="/features/">🍜 Menu</a>
+    <a href="/cart/">🛒 Cart</a>
+
+    {% if user.is_authenticated %}
+        <a href="/dashboard/">📊 Dashboard</a>
+        <a href="/logout/">🚪 Logout</a>
+    {% else %}
+        <a href="/login/">🔑 Login</a>
+        <a href="/register/">📝 Register</a>
+    {% endif %}
+
+</div>
+
+<!-- 🔥 TOP HEADER -->
+<div class="top-header">
+
+    <h3>Welcome to Konark 🍜</h3>
+
+    <div class="header-right">
+        {% if user.is_authenticated %}
+            <span>Hi, {{ user.username }}</span>
+        {% endif %}
+    </div>
+
+</div>
+
+<!-- 🔥 MAIN CONTENT -->
+<div class="main-content">
+
+    {% block content %}
+    {% endblock %}
+
+</div>
+
+</body>
+</html>

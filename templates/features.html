@@ -1,0 +1,108 @@
+```html
+{% extends 'base.html' %}
+
+{% block content %}
+
+<!-- 🔥 MENU HEADER -->
+<section class="hero" style="height:50vh;">
+    <div class="hero-overlay">
+        <h1 style="font-size:40px;">Our Chinese Menu</h1>
+        <p>Choose your favorite dishes</p>
+    </div>
+</section>
+
+<!-- 🔥 TITLE -->
+<h2 class="menu-title">🍜 Full Menu</h2>
+
+<!-- 🍽️ GRID -->
+<div class="menu-grid">
+
+    <!-- 1 -->
+    <div class="food-card">
+        <img src="/static/images/noodles.jpg">
+        <h3>Veg Hakka Noodles</h3>
+        <p>₹180</p>
+        <a href="/add-to-cart/Veg Hakka Noodles/180/" class="btn">Add to Cart</a>
+    </div>
+
+    <!-- 2 -->
+    <div class="food-card">
+        <img src="/static/images/friedrice.jpg">
+        <h3>Chicken Fried Rice</h3>
+        <p>₹200</p>
+        <a href="/add-to-cart/Chicken Fried Rice/200/" class="btn">Add to Cart</a>
+    </div>
+
+    <!-- 3 -->
+    <div class="food-card">
+        <img src="/static/images/manchurian.jpg">
+        <h3>Veg Manchurian</h3>
+        <p>₹190</p>
+        <a href="/add-to-cart/Veg Manchurian/190/" class="btn">Add to Cart</a>
+    </div>
+
+    <!-- 4 -->
+    <div class="food-card">
+        <img src="/static/images/chilli.jpg">
+        <h3>Chilli Chicken</h3>
+        <p>₹250</p>
+        <a href="/add-to-cart/Chilli Chicken/250/" class="btn">Add to Cart</a>
+    </div>
+
+    <!-- 5 -->
+    <div class="food-card">
+        <img src="/static/images/schezwan.jpg">
+        <h3>Schezwan Noodles</h3>
+        <p>₹210</p>
+        <a href="/add-to-cart/Schezwan Noodles/210/" class="btn">Add to Cart</a>
+    </div>
+
+    <!-- 6 -->
+    <div class="food-card">
+        <img src="/static/images/soup.jpg">
+        <h3>Hot & Sour Soup</h3>
+        <p>₹120</p>
+        <a href="/add-to-cart/Hot Soup/120/" class="btn">Add to Cart</a>
+    </div>
+
+    <!-- 7 -->
+    <div class="food-card">
+        <img src="/static/images/springroll.jpg">
+        <h3>Spring Rolls</h3>
+        <p>₹150</p>
+        <a href="/add-to-cart/Spring Rolls/150/" class="btn">Add to Cart</a>
+    </div>
+
+    <!-- 8 -->
+    <div class="food-card">
+        <img src="/static/images/paneer.jpg">
+        <h3>Paneer Chilli</h3>
+        <p>₹230</p>
+        <a href="/add-to-cart/Paneer Chilli/230/" class="btn">Add to Cart</a>
+    </div>
+
+    <!-- 9 -->
+    <div class="food-card">
+        <img src="/static/images/rice.jpg">
+        <h3>Schezwan Rice</h3>
+        <p>₹200</p>
+        <a href="/add-to-cart/Schezwan Rice/200/" class="btn">Add to Cart</a>
+    </div>
+
+    <!-- 10 -->
+    <div class="food-card">
+        <img src="/static/images/dumpling.jpg">
+        <h3>Chicken Dumplings</h3>
+        <p>₹260</p>
+        <a href="/add-to-cart/Dumplings/260/" class="btn">Add to Cart</a>
+    </div>
+
+</div>
+
+<!-- 🔥 EXTRA SECTION -->
+<section style="text-align:center; padding:40px;">
+    <h2>🍽️ Freshly Prepared, Delivered Fast</h2>
+    <p>Experience authentic Chinese flavors at Konark</p>
+</section>
+
+{% endblock %}

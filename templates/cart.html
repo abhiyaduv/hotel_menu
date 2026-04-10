@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="cart-container">
+
+    <h2>Your Cart</h2>
+
+    {% if cart %}
+        <div class="cart-list">
+            {% for item in cart %}
+            <div class="cart-card">
+                <div class="cart-left">
+                    <h3>{{ item.name }}</h3>
+                    <p class="price">₹{{ item.price }}</p>
+                </div>
+                <div class="cart-right">
+                    <a href="/remove/{{ forloop.counter0 }}/" class="remove-btn">Remove</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="cart-summary">
+            <h3>Total: ₹{{ total }}</h3>
+            <button class="checkout-btn" onclick="openCheckout()">Proceed to Checkout</button>
+        </div>
+
+    {% else %}
+        <div class="empty-cart">
+            <h3>Your cart is empty 🛒</h3>
+        </div>
+    {% endif %}
+
+</div>
+
+<!-- CHECKOUT MODAL -->
+<div id="checkoutModal" class="checkout-modal" style="display:none;">
+
+    <div class="checkout-content">
+
+        <h2>Checkout</h2>
+
+        <div class="payment-options">
+            <button onclick="showUPI()">UPI</button>
+            <button onclick="showCard()">Card</button>
+        </div>
+
+        <!-- UPI -->
+        <div id="upiBox" class="payment-box" style="display:none;">
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=konark" alt="UPI QR Code"/>
+            <p>Scan & Pay</p>
+        </div>
+
+        <!-- CARD -->
+        <div id="cardBox" class="payment-box" style="display:none;">
+            <input id="cardNumber" placeholder="Card Number" maxlength="16">
+            <input id="expiryDate" placeholder="Expiry Date (MM/YY)" maxlength="5">
+            <input id="cvv" placeholder="CVV" maxlength="3" type="password">
+        </div>
+
+        <button class="place-order-btn" onclick="placeOrder()">Place Order</button>
+        <button onclick="closeCheckout()" class="close-btn">Cancel</button>
+
+    </div>
+</div>
+
+<script>
+    let selectedMethod = null;
+
+    function openCheckout() {
+        document.getElementById("checkoutModal").style.display = "flex";
+        selectedMethod = null;
+        document.getElementById("upiBox").style.display = "none";
+        document.getElementById("cardBox").style.display = "none";
+    }
+
+    function closeCheckout() {
+        document.getElementById("checkoutModal").style.display = "none";
+    }
+
+    function showUPI() {
+        selectedMethod = "upi";
+        document.getElementById("upiBox").style.display = "block";
+        document.getElementById("cardBox").style.display = "none";
+    }
+
+    function showCard() {
+        selectedMethod = "card";
+        document.getElementById("cardBox").style.display = "block";
+        document.getElementById("upiBox").style.display = "none";
+    }
+
+    function placeOrder() {
+        if (!selectedMethod) {
+            alert("Please select a payment method (UPI or Card).");
+            return;
+        }
+
+        if (selectedMethod === "card") {
+            const cardNumber = document.getElementById("cardNumber").value.trim();
+            const expiryDate = document.getElementById("expiryDate").value.trim();
+            const cvv = document.getElementById("cvv").value.trim();
+
+            if (!cardNumber || cardNumber.length < 16) {
+                alert("Please enter a valid 16-digit card number.");
+                return;
+            }
+            if (!expiryDate || !/^\d{2}\/\d{2}$/.test(expiryDate)) {
+                alert("Please enter expiry date in MM/YY format.");
+                return;
+            }
+            if (!cvv || cvv.length < 3) {
+                alert("Please enter a valid CVV.");
+                return;
+            }
+        }
+
+        // Submit order — redirect to your Django order-placement URL
+        window.location.href = "/place-order/";
+    }
+</script>
+
+{% endblock %}
